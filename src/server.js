@@ -1,11 +1,11 @@
 import express from "express";
 import morgan from "morgan";
 
+import routes from "./routes/index.js";
+
 const server = express();
 server.use(morgan("dev"));
 
-server.get("/", (req, res) => {
-  res.send("Hello, world!");
-});
+server.use(routes);
 
 export default server;
