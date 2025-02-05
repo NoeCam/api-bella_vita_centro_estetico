@@ -28,7 +28,7 @@ async function createTables() {
     await pool.query(`USE ${MYSQL_DATABASE}`);
 
     await pool.query(`
-      DROP TABLE IF EXISTS admin, patients, treatements, appointments;
+      DROP TABLE IF EXISTS admin, patients, treatments, appointments;
     `);
 
     await pool.query(`
@@ -44,7 +44,7 @@ async function createTables() {
     `);
 
     await pool.query(`
-      CREATE TABLE treatements(
+      CREATE TABLE treatments(
         id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
         name VARCHAR(50) NOT NULL,
         type VARCHAR(50) NOT NULL,
@@ -67,7 +67,7 @@ async function createTables() {
         end_time TIMESTAMP NOT NULL,
         state ENUM('Pendiente', 'Confirmado', 'Cancelado') DEFAULT 'Pendiente',
         FOREIGN KEY (patient_id) REFERENCES patients(id),
-        FOREIGN KEY (treatement_id) REFERENCES treatements(id)
+        FOREIGN KEY (treatement_id) REFERENCES treatments(id)
       )
     `);
 
@@ -98,7 +98,7 @@ async function createTables() {
     `);
 
     await pool.query(`
-      INSERT INTO treatements(name, type, subtype, description, appointment_duration, price, clarification) 
+      INSERT INTO treatments(name, type, subtype, description, appointment_duration, price, clarification) 
       VALUES 
       ("Diseño y perfilado",  "Cejas", "","", 1, 650, null),
       ("Laminado", "Cejas", "","", 1, 1290, null),
