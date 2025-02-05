@@ -1,6 +1,5 @@
 import express from "express";
 import getHomeController from "../controllers/getHomeController.js";
-import getContactController from "../controllers/getContactControler.js";
 import getAppointmentController from "../controllers/getAppointmentsController.js";
 import getAdminController from "../controllers/getAdminController.js";
 import postLoginAdminController from "../controllers/postLoginAdminController.js";
@@ -10,8 +9,6 @@ import authAdminController from "../middleware/authAdminController.js";
 const router = express.Router();
 
 router.get("/", getHomeController);
-
-router.get("/contact", getContactController);
 
 router.get("/appointments", getAppointmentController);
 
