@@ -8,7 +8,7 @@ const selectAllTreatmentsModel = async () => {
 
   const [treatments] = await pool.query(
     `
-    SELECT id, name, type, subtype, description, appointment_duration, price, clarification
+    SELECT id, name, type, subtype, description, appointment_duration, price, clarification, image
     FROM treatments
     ORDER BY type
     `
