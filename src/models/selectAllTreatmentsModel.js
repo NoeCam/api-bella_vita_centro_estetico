@@ -10,7 +10,7 @@ const selectAllTreatmentsModel = async () => {
     `
     SELECT id, name, type, subtype, description, appointment_duration, price, clarification, image
     FROM treatments
-    ORDER BY type
+    ORDER BY id
     `
   );
 
