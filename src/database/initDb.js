@@ -28,7 +28,7 @@ async function createTables() {
     await pool.query(`USE ${MYSQL_DATABASE}`);
 
     await pool.query(`
-      DROP TABLE IF EXISTS patients, treatments, admin, timetable_admin, appointments;
+      DROP TABLE IF EXISTS patients, treatments, admins, timetable_admins, treatment_admins, appointments;
     `);
 
     await pool.query(`
@@ -40,7 +40,7 @@ async function createTables() {
         celphone CHAR(30) NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
         modified_at DATETIME ON UPDATE CURRENT_TIMESTAMP
-	    )
+	    );
     `);
 
     await pool.query(`
@@ -60,7 +60,7 @@ async function createTables() {
     `);
 
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS admin (
+      CREATE TABLE IF NOT EXISTS admins (
         id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,
@@ -70,17 +70,28 @@ async function createTables() {
         password CHAR(100) NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
         modified_at DATETIME ON UPDATE CURRENT_TIMESTAMP
-	    )
+	    );
     `);
 
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS timetable_admin (
+      CREATE TABLE IF NOT EXISTS timetable_admins (
         id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
         admin_id INT NOT NULL,
+        work_date DATE NOT NULL,
         start_time TIMESTAMP NOT NULL,
         end_time TIMESTAMP NOT NULL,
-        FOREIGN KEY (admin_id) REFERENCES admin(id)
-      )
+        FOREIGN KEY (admin_id) REFERENCES admins(id)
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS treatment_admins (
+        id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        treatment_id INT NOT NULL,
+        admin_id INT NOT NULL,
+        FOREIGN KEY (treatment_id) REFERENCES treatments(id),
+        FOREIGN KEY (admin_id) REFERENCES admins(id)
+      );
     `);
 
     await pool.query(`
@@ -89,18 +100,20 @@ async function createTables() {
         patient_id INT NOT NULL,
         treatment_id INT NOT NULL,
         admin_id INT NOT NULL,
+        date DATE NOT NULL,
         start_time TIMESTAMP NOT NULL,
         end_time TIMESTAMP NOT NULL,
         state ENUM('Pendiente', 'Confirmado', 'Cancelado') DEFAULT 'Pendiente',
         FOREIGN KEY (patient_id) REFERENCES patients(id),
-        FOREIGN KEY (treatment_id) REFERENCES treatments(id)
-      )
+        FOREIGN KEY (treatment_id) REFERENCES treatments(id),
+        FOREIGN KEY (admin_id) REFERENCES admins(id)
+      );
     `);
 
     const hashedPass = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
     await pool.query(`
-      INSERT INTO admin(first_name, last_name, email, celphone, password) 
+      INSERT INTO admins (first_name, last_name, email, celphone, password) 
       VALUES (
         "${ADMIN_FIRST_NAME}",
         "${ADMIN_LAST_NAME}",
@@ -111,29 +124,25 @@ async function createTables() {
     `);
 
     await pool.query(`
-      INSERT INTO treatments(name, type, subtype, description, appointment_duration, price, clarification) 
+      INSERT INTO treatments(name, type, subtype, description, appointment_duration, price, clarification, image) 
       VALUES 
-        ("Diseño y perfilado",  "Cejas", "","", 1, 650, null),
-        ("Laminado", "Cejas", "","", 1, 1290, null),
-        ("Henna ", "Cejas", "","", 1, 990,"Incluye perfilado"),
-        ("Microblanding", "Cejas", "","", 1, 6990, null),
-        ("Remoción química", "Cejas", "","", 1, 990, "Precio por sesión"),
-        ("Lifting", "Pestañas", "","", 1, 1390, null),
-        ("Extensión pelo a pelo", "Pestañas", "","", 1, 1390, "Mantenimiento cada 21 días $1190"),
-        ("Volumen brasilero con fibras tecnológicas", "Pestañas", "","", 1, 1490, "Mantenimiento cada 21 días $1190"),
-        ("Limpieza profunda", "Faciales", "","", 1, 1200, null),
-        ("Peeling", "Faciales", "","", 1, 1500, null),
-        ("Hilos cosméticos", "Faciales", "","", 1, 3990, null),
-        ("BB Glow", "Faciales", "","", 1, 1990, null),
-        ("Punta de diamantes", "Faciales", "Aparatología","", 1, null, "A evaluación"),
-        ("Dermaplaning", "Faciales", "Aparatología","", 1,null, "A evaluación"),
-        ("Radiofrecuencia", "Faciales", "Aparatología","", 1, null, "A evaluación"),
-        ("Máscara fototerapia led", "Faciales", "Aparatología","", 1, null, "A evaluación"),
-        ("Dermapen", "Faciales", "Aparatología","", 1, null, "A evaluación"),
-        ("BB Lips", "Labios", "","", 1, 2990, null),
-        ("HidraGloss", "Labios", "","", 1, 1990, null),
-        ("Micropigmentación", "Labios", "","", 1, 6990, null)
-        ; 
+      ("Diseño y perfilado",  "Cejas", "", "Define y estiliza la forma de tus cejas para armonizar tu rostro con un acabado natural y pulido. Utilizamos técnicas especializadas para resaltar la estructura ósea y lograr un look impecable. Es ideal para quienes buscan un diseño personalizado y acorde a sus facciones.", 1, 650, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1739960014/CVM/qmfgoaoukjcd6gnwgymu.webp"),
+      ("Laminado", "Cejas", "", "Aporta volumen, fijación y dirección a tus cejas con un efecto de mayor densidad y un acabado prolijo y natural. Mediante un tratamiento químico suave, se logran cejas más alineadas y peinadas sin la necesidad de utilizar productos diariamente.", 1, 1290, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138650/CVM/r95skfhkhyqvcforg0no.jpg"),
+      ("Henna", "Cejas", "", "Coloración semipermanente con henna que define, rellena y da volumen a las cejas. Proporciona un efecto de maquillaje natural y duradero, adaptándose a diferentes tonos de piel y cabello. Incluye perfilado para un acabado más limpio y estructurado.", 1, 990, "Incluye perfilado", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740139726/CVM/cmpnd9ezvn2xsetagsbm.jpg"),
+      ("Microblanding", "Cejas", "", "Técnica de pigmentación semipermanente que imita el vello natural para cejas más definidas y estructuradas. Es ideal para quienes desean corregir la forma de sus cejas o rellenar zonas despobladas, logrando un aspecto natural y de larga duración.", 1, 6990, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138650/CVM/ruz62fmnbcpukdeiztsy.jpg"),
+      ("Remoción química", "Cejas", "", "Elimina pigmentos no deseados de procedimientos como micropigmentación o microblading mediante un proceso químico seguro. Es un tratamiento progresivo que ayuda a corregir errores o modificar la intensidad del color. Precio por sesión.", 1, 990, "Precio por sesión", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/btqnfospx2lef8hvjskh.jpg"),
+      ("Lifting", "Pestañas", "", "Eleva y curva las pestañas naturales desde la raíz, proporcionando un efecto de mayor longitud y volumen sin necesidad de extensiones. Ideal para quienes buscan una mirada más abierta y expresiva con un resultado duradero y sin mantenimiento diario.", 1, 1390, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/wafnak4m8yegdlwsar6p.jpg"),
+      ("Extensión pelo a pelo", "Pestañas", "", "Aplicación individual de extensiones en cada pestaña natural para un efecto más largo, definido y voluminoso. Se utilizan fibras ligeras para un look sofisticado y natural. Requiere mantenimiento cada 21 días para conservar el diseño.", 1, 1390, "Mantenimiento cada 21 días $1190", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/bs9ytjcys7ufq9f4eskj.jpg"),
+      ("Volumen brasilero con fibras tecnológicas", "Pestañas", "", "Proporciona un efecto de mayor densidad y volumen gracias a la aplicación de fibras ultraligeras que imitan la pestaña natural. Ideal para quienes desean un look más intenso y definido sin perder naturalidad. Requiere mantenimiento cada 21 días.", 1, 1490, "Mantenimiento cada 21 días $1190", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/wwmupuxf4tbvdi9rktk2.jpg"),
+      ("Limpieza profunda", "Faciales", "", "Elimina impurezas, células muertas y residuos de maquillaje mediante un proceso de limpieza profunda que revitaliza la piel. Incluye exfoliación, extracción de comedones y mascarilla hidratante para mejorar la textura y luminosidad del rostro.", 1, 1200, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/ezbi0spjdo5ztotybh8o.jpg"),
+      ("Peeling", "Faciales", "", "Exfoliación química que ayuda a mejorar la textura de la piel, reducir manchas, cicatrices y signos de envejecimiento. Se utilizan ácidos específicos para renovar la piel en profundidad y estimular la regeneración celular, obteniendo un cutis más uniforme.", 1, 1500, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/yurwoed05pjq6fzquu0u.jpg"),
+      ("Hilos cosméticos", "Faciales", "", "Estimula la producción de colágeno mediante la aplicación de hilos tensores en el rostro. Proporciona un efecto lifting inmediato sin cirugía, mejorando la firmeza y redefiniendo el contorno facial para un aspecto rejuvenecido y natural.", 1, 3990, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740140778/CVM/bofbbhz9yo7ys7qgjfnb.jpg"),
+      ("BB Glow", "Faciales", "", "Tratamiento innovador de microneedling que aporta luminosidad y unifica el tono de la piel, creando un efecto de base de maquillaje semipermanente. Reduce manchas, enrojecimiento y signos de fatiga, dejando la piel más radiante y saludable.", 1, 1990, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/sdxaqxmn2occxqd4d8kj.jpg"),
+      ("Punta de diamantes", "Faciales", "Aparatología", "Exfoliación mecánica con tecnología de punta de diamante que remueve células muertas y mejora la textura de la piel. Ayuda a reducir cicatrices, manchas y líneas finas, promoviendo una piel más suave y luminosa.", 1, null, "A evaluación", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/bwfhwqbuy8nyfc8etid2.jpg"),
+      ("Dermaplaning", "Faciales", "Aparatología", "Exfoliación manual con bisturí que elimina células muertas y vello facial, dejando la piel más lisa, suave y luminosa. Ideal para mejorar la absorción de productos cosméticos y conseguir un acabado impecable en el maquillaje.", 1, null, "A evaluación", "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138649/CVM/s5ghmmcgelb2nbpr3exn.jpg"),
+      ("BB Lips", "Labios", "", "Hidratación profunda y pigmentación sutil para unos labios más saludables, voluminosos y con un color natural. El tratamiento mejora la textura y aporta un brillo ligero sin necesidad de labiales, logrando un look fresco y rejuvenecido.", 1, 2990, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138648/CVM/dyzfanbqknhnv9q6ihyx.jpg"),
+      ("Micropigmentación", "Labios", "", "Pigmentación semipermanente para definir el contorno y color de los labios, logrando un efecto natural y armonioso. Es ideal para corregir asimetrías, mejorar la tonalidad y dar un aspecto más voluminoso sin necesidad de maquillaje diario.", 1, 6990, null, "https://res.cloudinary.com/dlxdb2gs7/image/upload/v1740138648/CVM/fbos7xxvogylclhk9fxa.jpg")
+      ;
     `);
   } catch (error) {
     throw new Error("Error al crear las tablas", { cause: error });
