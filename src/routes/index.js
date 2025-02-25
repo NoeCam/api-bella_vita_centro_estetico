@@ -6,7 +6,6 @@ import postLoginAdminController from "../controllers/postLoginAdminController.js
 
 import authAdminController from "../middleware/authAdminController.js";
 import getTimeAppointmentsController from "../controllers/getTimeAppointmentsController.js";
-import selectAllTimesByTreatment from "../models/selectAllTimesByTreatment.js";
 
 const router = express.Router();
 
@@ -14,9 +13,9 @@ router.get("/", getTreatmentsController);
 
 router.get("/appointments", getAppointmentController);
 
-router.get("/time-appointments", selectAllTimesByTreatment);
+router.get("/time-appointments", getTimeAppointmentsController);
 
-router.post("/booking-appointments", getTimeAppointmentsController);
+//router.post("/booking-appointments", getTimeAppointmentsController);
 
 ////////////////////////// Admin routes ///////////////////////////
 
