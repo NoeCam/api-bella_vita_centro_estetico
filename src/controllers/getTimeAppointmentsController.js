@@ -1,24 +1,36 @@
-import getPool from "../database/getPool.js";
-import { MYSQL_DATABASE } from "../../env.js";
+import selectAllTimesByTreatment from "../models/selectAllTimesByTreatment.js";
 
-const getTimeAppointmentsController = async (date, treatmentId) => {
-  const pool = await getPool();
+const getTimeAppointmentsController = async (req, res, next) => {
+  try {
+    const { date, treatmentId } = req.query;
+    console.log(date, treatmentId);
 
-  await pool.query(`USE ${MYSQL_DATABASE}`);
+    if (date === null || treatmentId === null) {
+      return res.status(400).send({
+        status: "error",
+        message: "Faltan datos",
+      });
+    } else {
+      const dateNow = new Date();
+      const dateSelected = new Date(date);
+      if (dateSelected < dateNow) {
+        return res.status(400).send({
+          status: "error",
+          message: "No se pueden reservar citas en fechas pasadas",
+        });
+      }
+    }
 
-  const [allTimes] = await pool.query(
-    `
-    SELECT ti.id, ti.admin_id, ti.work_date, ti.start_time, ti.end_time, t.appointment_duration, t.treatment_name, t.id as treatment_id, tr.admin_id
-    FROM timetable_admins ti
-    INNER JOIN treatments t
-    LEFT JOIN treatments tr
-    ON ta.admin_id = t.admin_id
-    ORDER BY ta.start_time ASC
-    WHERE ta.work_date = ? AND t.admin_id = ?
-    `
-  );
-
-  return treatments;
+    const allTimes = await selectAllTimesByTreatment(date, treatmentId);
+    res.send({
+      status: "ok",
+      data: {
+        allTimes,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export default getTimeAppointmentsController;
