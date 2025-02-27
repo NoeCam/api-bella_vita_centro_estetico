@@ -6,7 +6,7 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
 
-  // 1. Obtener la duración del tratamiento y el horario laboral
+  // 1. Obtiene la duración del tratamiento y el horario laboral
   const [[treatment]] = await pool.query(
     `SELECT t.appointment_duration
      FROM treatments t
@@ -28,7 +28,7 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
 
   if (workHours.length === 0) return [];
 
-  // 2. Obtener citas ya reservadas
+  // 2. Obtiene citas ya reservadas
   const [appointments] = await pool.query(
     `SELECT ap.start_time, ap.end_time
      FROM appointments ap
@@ -37,13 +37,16 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
     [date, treatmentId]
   );
 
-  // 3. Función para generar los intervalos de tiempo
+  // 3. Función que genera los intervalos de tiempo
   const generateTimeSlots = (start, end, duration) => {
     const slots = [];
     let currentTime = new Date(`1970-01-01T${start}`);
     const endTime = new Date(`1970-01-01T${end}`);
 
-    while (currentTime <= endTime) {
+    // Ajusta el tiempo máximo permitido para el inicio del tratamiento
+    const latestStartTime = new Date(endTime.getTime() - duration * 60000);
+
+    while (currentTime <= latestStartTime) {
       slots.push(currentTime.toTimeString().slice(0, 5));
       currentTime.setMinutes(currentTime.getMinutes() + 30);
     }
@@ -51,7 +54,7 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
     return slots;
   };
 
-  // 4. Calcular horarios disponibles
+  // 4. Calcula horarios disponibles
   const availableTimes = [];
 
   workHours.forEach(({ start_time, end_time }) => {
@@ -61,7 +64,7 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
       const slotStart = new Date(`1970-01-01T${slot}`);
       const slotEnd = new Date(slotStart.getTime() + treatmentDuration * 60000);
 
-      // Comprobar si este intervalo se solapa con alguna cita existente
+      // Comprueba si este intervalo se solapa con alguna cita existente
       const isOccupied = appointments.some(({ start_time, end_time }) => {
         const appointmentStart = new Date(`1970-01-01T${start_time}`);
         const appointmentEnd = new Date(`1970-01-01T${end_time}`);
