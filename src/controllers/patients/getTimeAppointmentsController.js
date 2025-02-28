@@ -1,4 +1,4 @@
-import selectAllTimesByTreatment from "../models/selectAllTimesByTreatment.js";
+import selectAllTimesByTreatmentService from "../../services/selectAllTimesByTreatmentService.js";
 
 const getTimeAppointmentsController = async (req, res, next) => {
   try {
@@ -21,9 +21,10 @@ const getTimeAppointmentsController = async (req, res, next) => {
       }
     }
 
-    const allTimes = await selectAllTimesByTreatment(date, treatmentId);
+    const allTimes = await selectAllTimesByTreatmentService(date, treatmentId);
     res.send({
       status: "ok",
+      message: "Horarios disponibles",
       data: {
         allTimes,
       },

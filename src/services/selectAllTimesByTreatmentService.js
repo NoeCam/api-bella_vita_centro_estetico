@@ -1,7 +1,7 @@
 import getPool from "../database/getPool.js";
 import { MYSQL_DATABASE } from "../../env.js";
 
-const selectAllTimesByTreatment = async (date, treatmentId) => {
+const selectAllTimesByTreatmentService = async (date, treatmentId) => {
   const pool = await getPool();
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
@@ -85,4 +85,4 @@ const selectAllTimesByTreatment = async (date, treatmentId) => {
   return availableTimes;
 };
 
-export default selectAllTimesByTreatment;
+export default selectAllTimesByTreatmentService;

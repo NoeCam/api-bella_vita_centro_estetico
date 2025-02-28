@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import {
   notAuthenticatedError,
   invalidCredentialsError,
-} from "../services/errorService.js";
+} from "../utils/errorUtils.js";
 
 const authAdminController = async (req, res, next) => {
   try {

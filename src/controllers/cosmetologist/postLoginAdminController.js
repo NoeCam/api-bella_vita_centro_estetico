@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import selectAdminByEmailModel from "../models/selectAdminByEmailModel.js";
-import { invalidCredentialsError } from "../services/errorService.js";
+import selectAdminByEmailService from "../../services/selectAdminByEmailService.js";
+import { invalidCredentialsError } from "../../utils/errorUtils.js";
 
 // Función controladora final que loguea a un usuario retornando un token.
 const postLoginAdminController = async (req, res, next) => {
@@ -10,7 +10,7 @@ const postLoginAdminController = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Seleccionamos los datos del usuario que necesitamos utilizando el email.
-    const admin = await selectAdminByEmailModel(email);
+    const admin = await selectAdminByEmailService(email);
     // Variable que almacenará un valor booleano indicando si la contraseña es correcto o no.
     let validPass;
     // Compruebo que la contraseña del admin coincida con la almacenada.
@@ -33,7 +33,7 @@ const postLoginAdminController = async (req, res, next) => {
     });
     res.send({
       status: "ok",
-      message: "Admin logged in correctly.",
+      message: "Administrador logueado correctamente",
       data: {
         token,
       },
