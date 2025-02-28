@@ -1,12 +1,13 @@
-import selectAllTreatmentsModel from "../models/selectAllTreatmentsModel.js";
+import selectAllTreatmentsService from "../../services/selectAllTreatmentsService.js";
 
 // Función para obtener la lista de tratamientos ordenados por tipo.
 const getTreatmentsController = async (req, res, next) => {
   try {
-    let treatments = await selectAllTreatmentsModel();
+    let treatments = await selectAllTreatmentsService();
 
     res.send({
       status: "ok",
+      message: "Lista de tratamientos obtenida correctamente",
       data: {
         treatments,
       },

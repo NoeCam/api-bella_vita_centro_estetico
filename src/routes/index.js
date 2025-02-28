@@ -1,21 +1,19 @@
 import express from "express";
-import getTreatmentsController from "../controllers/getTreatmentsController.js";
-import getAppointmentController from "../controllers/getAppointmentsController.js";
-import getAdminController from "../controllers/getAdminController.js";
-import postLoginAdminController from "../controllers/postLoginAdminController.js";
+import getTreatmentsController from "../controllers/patients/getTreatmentsController.js";
+import getTimeAppointmentsController from "../controllers/patients/getTimeAppointmentsController.js";
+import postBookingAppointmentsController from "../controllers/patients/postBookingAppointmentController.js";
 
 import authAdminController from "../middleware/authAdminController.js";
-import getTimeAppointmentsController from "../controllers/getTimeAppointmentsController.js";
+import postLoginAdminController from "../controllers/cosmetologist/postLoginAdminController.js";
+import getAdminController from "../controllers/cosmetologist/getAdminController.js";
 
 const router = express.Router();
 
 router.get("/", getTreatmentsController);
 
-router.get("/appointments", getAppointmentController);
-
 router.get("/time-appointments", getTimeAppointmentsController);
 
-//router.post("/booking-appointments", getTimeAppointmentsController);
+router.post("/booking-appointments", postBookingAppointmentsController);
 
 ////////////////////////// Admin routes ///////////////////////////
 

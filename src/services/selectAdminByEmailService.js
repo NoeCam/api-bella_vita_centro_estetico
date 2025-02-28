@@ -2,7 +2,7 @@ import getPool from "../database/getPool.js";
 import { MYSQL_DATABASE } from "../../env.js";
 
 // Función que realiza una consulta a la base de datos para seleccionar el admin con un email dado.
-const selectAdminByEmailModel = async (email) => {
+const selectAdminByEmailService = async (email) => {
   const pool = await getPool();
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
@@ -16,4 +16,4 @@ const selectAdminByEmailModel = async (email) => {
   return admin[0];
 };
 
-export default selectAdminByEmailModel;
+export default selectAdminByEmailService;

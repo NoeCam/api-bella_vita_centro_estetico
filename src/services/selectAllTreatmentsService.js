@@ -1,7 +1,7 @@
 import getPool from "../database/getPool.js";
 import { MYSQL_DATABASE } from "../../env.js";
 
-const selectAllTreatmentsModel = async () => {
+const selectAllTreatmentsService = async () => {
   const pool = await getPool();
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
@@ -17,4 +17,4 @@ const selectAllTreatmentsModel = async () => {
   return treatments;
 };
 
-export default selectAllTreatmentsModel;
+export default selectAllTreatmentsService;
