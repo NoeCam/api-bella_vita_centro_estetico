@@ -30,9 +30,6 @@ const insertBookingService = async (
   // 2. Calcula la hora de finalización de la cita
   const endTime = addMinutesToTime(startTime, treatmentDuration);
 
-  console.log("startTime", startTime, typeof startTime);
-  console.log("endTime", endTime, typeof endTime);
-
   // 3. Inserta el nuevo paciente en la base de datos
   const [result] = await pool.query(
     `

@@ -4,11 +4,18 @@ import getPool from "./getPool.js";
 
 import {
   MYSQL_DATABASE,
-  ADMIN_FIRST_NAME,
-  ADMIN_LAST_NAME,
-  ADMIN_EMAIL,
-  ADMIN_CELPHONE,
-  ADMIN_PASSWORD,
+  ADMIN_FIRST_NAME_1,
+  ADMIN_LAST_NAME_1,
+  ADMIN_IMAGE_1,
+  ADMIN_EMAIL_1,
+  ADMIN_CELPHONE_1,
+  ADMIN_PASSWORD_1,
+  ADMIN_FIRST_NAME_2,
+  ADMIN_LAST_NAME_2,
+  ADMIN_IMAGE_2,
+  ADMIN_EMAIL_2,
+  ADMIN_CELPHONE_2,
+  ADMIN_PASSWORD_2,
 } from "../../env.js";
 
 async function createDB() {
@@ -110,16 +117,26 @@ async function createTables() {
       );
     `);
 
-    const hashedPass = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    const hashedPass_1 = await bcrypt.hash(ADMIN_PASSWORD_1, 10);
+    const hashedPass_2 = await bcrypt.hash(ADMIN_PASSWORD_2, 10);
 
     await pool.query(`
-      INSERT INTO admins (first_name, last_name, email, celphone, password) 
+      INSERT INTO admins (first_name, last_name, image, email, celphone, password) 
       VALUES (
-        "${ADMIN_FIRST_NAME}",
-        "${ADMIN_LAST_NAME}",
-        "${ADMIN_EMAIL}",
-        "${ADMIN_CELPHONE}",
-        "${hashedPass}"
+        "${ADMIN_FIRST_NAME_1}",
+        "${ADMIN_LAST_NAME_1}",
+        "${ADMIN_IMAGE_1}",
+        "${ADMIN_EMAIL_1}",
+        "${ADMIN_CELPHONE_1}",
+        "${hashedPass_1}"
+        ),
+        (
+        "${ADMIN_FIRST_NAME_2}",
+        "${ADMIN_LAST_NAME_2}",
+        "${ADMIN_IMAGE_2}",
+        "${ADMIN_EMAIL_2}",
+        "${ADMIN_CELPHONE_2}",
+        "${hashedPass_2}"
         );
     `);
 
@@ -163,7 +180,19 @@ async function createTables() {
       (13, 1),
       (14, 1),
       (15, 1),
-      (16, 1)
+      (16, 1),
+      (1, 2),
+      (2, 2),
+      (3, 2),
+      (4, 2),
+      (5, 2),
+      (6, 2),
+      (7, 2),
+      (8, 2),
+      (9, 2),
+      (10, 2),
+      (11, 2),
+      (12, 2)
       ;
 `);
   } catch (error) {
