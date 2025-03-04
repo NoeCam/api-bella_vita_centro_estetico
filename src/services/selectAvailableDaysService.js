@@ -11,8 +11,6 @@ const selectAvailableDaysService = async (
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
 
-  console.log(year, month, adminId, treatmentId);
-
   const [availableDays] = await pool.query(
     `WITH days_of_month AS (
     SELECT DATE_ADD(DATE(CONCAT(?, '-', ?, '-01')), INTERVAL n DAY) AS work_date

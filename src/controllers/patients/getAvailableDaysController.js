@@ -5,7 +5,6 @@ const getAvailableDaysController = async (req, res, next) => {
     const { treatmentId, adminId } = req.query;
 
     const { year, month } = req.body;
-    console.log(year);
 
     if (
       treatmentId === null ||
