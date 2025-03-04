@@ -60,8 +60,6 @@ ORDER BY d.work_date;
     ]
   );
 
-  console.log(availableDays);
-
   return availableDays;
 };
 
