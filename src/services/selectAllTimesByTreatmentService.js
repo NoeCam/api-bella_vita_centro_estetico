@@ -1,12 +1,22 @@
 import getPool from "../database/getPool.js";
 import { MYSQL_DATABASE } from "../../env.js";
 
-const selectAllTimesByTreatmentService = async (date, treatmentId) => {
+const selectAllTimesByTreatmentService = async (treatmentId, adminId, date) => {
   const pool = await getPool();
 
   await pool.query(`USE ${MYSQL_DATABASE}`);
 
-  // 1. Obtiene la duración del tratamiento y el horario laboral
+  // 1. Obtiene el horario laboral del administrador/cosmetólogo
+  const [[admin]] = await pool.query(
+    `SELECT a.id
+     FROM admins a
+     WHERE a.id = ?;`,
+    [adminId]
+  );
+
+  if (!admin) throw new Error("Cosmetóloga no encontrada");
+
+  // 1. Obtiene la duración del tratamiento
   const [[treatment]] = await pool.query(
     `SELECT t.appointment_duration
      FROM treatments t
@@ -22,19 +32,19 @@ const selectAllTimesByTreatmentService = async (date, treatmentId) => {
     `SELECT ti.start_time, ti.end_time
      FROM timetable_admins ti
      INNER JOIN treatment_admins ta ON ta.admin_id = ti.admin_id
-     WHERE ti.work_date = ? AND ta.treatment_id = ?;`,
-    [date, treatmentId]
+     WHERE ti.work_date = ? AND ta.treatment_id = ? AND ti.admin_id = ?;`,
+    [date, treatmentId, adminId]
   );
 
   if (workHours.length === 0) return [];
 
-  // 2. Obtiene citas ya reservadas
+  // 2. Obtiene citas ya reservadas según el administrador/cosmetólogo
   const [appointments] = await pool.query(
     `SELECT ap.start_time, ap.end_time
      FROM appointments ap
      INNER JOIN treatment_admins ta ON ta.admin_id = ap.admin_id
-     WHERE ap.date = ? AND ta.treatment_id = ?;`,
-    [date, treatmentId]
+     WHERE ap.date = ? AND ta.treatment_id = ? AND ta.admin_id = ?;`,
+    [date, treatmentId, adminId]
   );
 
   // 3. Función que genera los intervalos de tiempo

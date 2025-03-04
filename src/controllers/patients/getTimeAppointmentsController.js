@@ -2,16 +2,16 @@ import selectAllTimesByTreatmentService from "../../services/selectAllTimesByTre
 
 const getTimeAppointmentsController = async (req, res, next) => {
   try {
-    const { date, treatmentId } = req.query;
-    console.log(date, treatmentId);
+    const { treatmentId, adminId, date } = req.query;
 
-    if (date === null || treatmentId === null) {
+    if (date === null || treatmentId === null || adminId === null) {
       return res.status(400).send({
         status: "error",
         message: "Faltan datos",
       });
     } else {
       const dateNow = new Date();
+
       const dateSelected = new Date(date);
       if (dateSelected < dateNow) {
         return res.status(400).send({
@@ -21,7 +21,11 @@ const getTimeAppointmentsController = async (req, res, next) => {
       }
     }
 
-    const allTimes = await selectAllTimesByTreatmentService(date, treatmentId);
+    const allTimes = await selectAllTimesByTreatmentService(
+      treatmentId,
+      adminId,
+      date
+    );
     res.send({
       status: "ok",
       message: "Horarios disponibles",

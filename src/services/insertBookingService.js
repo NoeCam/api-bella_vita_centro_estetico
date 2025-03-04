@@ -4,13 +4,13 @@ import addMinutesToTime from "../utils/addMunutesTotime.js";
 
 const insertBookingService = async (
   treatmentId,
+  adminId,
   date,
   startTime,
   first_name,
   last_name,
   email,
-  celphone,
-  adminId
+  celphone
 ) => {
   const pool = await getPool();
 

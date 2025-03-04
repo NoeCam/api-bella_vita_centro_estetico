@@ -6,17 +6,17 @@ const postBookingAppointmentController = async (req, res, next) => {
       req.body;
 
     const treatmentId = req.query.treatmentId;
+    const adminId = req.query.adminId;
 
-    const adminId = 1;
     await insertBookingService(
       treatmentId,
+      adminId,
       date,
       startTime,
       first_name,
       last_name,
       email,
-      celphone,
-      adminId
+      celphone
     );
 
     res.send({

@@ -6,10 +6,13 @@ import postBookingAppointmentsController from "../controllers/patients/postBooki
 import authAdminController from "../middleware/authAdminController.js";
 import postLoginAdminController from "../controllers/cosmetologist/postLoginAdminController.js";
 import getAdminController from "../controllers/cosmetologist/getAdminController.js";
+import getAllAdminsController from "../controllers/patients/getAllAdminsController.js";
 
 const router = express.Router();
 
 router.get("/", getTreatmentsController);
+
+router.get("/appointments", getAllAdminsController);
 
 router.get("/time-appointments", getTimeAppointmentsController);
 
