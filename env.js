@@ -2,6 +2,7 @@ import "dotenv/config";
 
 const {
   PORT,
+  FRONT,
   MYSQL_HOST,
   MYSQL_USER,
   MYSQL_PASSWORD,
@@ -23,6 +24,7 @@ const {
 
 export {
   PORT,
+  FRONT,
   MYSQL_HOST,
   MYSQL_USER,
   MYSQL_PASSWORD,
