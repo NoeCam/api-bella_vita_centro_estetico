@@ -2,9 +2,7 @@ import selectAvailableDaysService from "../../services/selectAvailableDaysServic
 
 const getAvailableDaysController = async (req, res, next) => {
   try {
-    const { treatmentId, adminId } = req.query;
-
-    const { year, month } = req.body;
+    const { treatmentId, adminId, year, month } = req.query;
 
     if (
       treatmentId === null ||

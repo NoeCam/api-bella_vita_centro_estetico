@@ -30,7 +30,7 @@ SELECT d.work_date,
        CASE WHEN COUNT(DISTINCT t.work_date) = 0 THEN false
             WHEN SUM(TIMESTAMPDIFF(MINUTE, t.start_time, t.end_time) / tr.appointment_duration) > COUNT(a.id)
             THEN true
-            ELSE false END AS disponibilidad
+            ELSE false END AS available
 FROM days_of_month d
 LEFT JOIN timetable_admins t ON d.work_date = t.work_date
                              AND t.admin_id = ?
