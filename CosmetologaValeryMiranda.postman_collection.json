@@ -1,0 +1,192 @@
+{
+	"info": {
+		"_postman_id": "54c77113-803a-41b1-8b93-a9f4673fecf5",
+		"name": "CosmetologaValeryMiranda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33879221"
+	},
+	"item": [
+		{
+			"name": "admin-login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"cosmetologavalerymiranda@gmail.com\",\r\n  \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3010/admin-login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"admin-login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "admin",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM4NjgxMDIxLCJleHAiOjE3NDEyNzMwMjF9.r2Oq00FEieEaFYN9v_gDxBEdnXm8Afi_QMxeR7mMPfA\"",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:3010/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "home",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3010/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "availabledays",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"year\": 2025,\r\n    \"month\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3010/availabledays?treatmentId=1&adminId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"availabledays"
+					],
+					"query": [
+						{
+							"key": "treatmentId",
+							"value": "1"
+						},
+						{
+							"key": "adminId",
+							"value": "1"
+						},
+						{
+							"key": "date",
+							"value": "2025-03-04 ",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "appointments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3010/appointments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "booking-appointments",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"Noeliamaria\",\r\n    \"last_name\": \"Cameliaacosta\",\r\n    \"email\": \"noecamelia2@gmail.com\",\r\n    \"celphone\": 999554539,\r\n    \"date\": \"2025/03/03\",\r\n    \"startTime\": \"17:30\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3010/booking-appointments?treatmentId=2&date=2025-03-03",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"booking-appointments"
+					],
+					"query": [
+						{
+							"key": "treatmentId",
+							"value": "2"
+						},
+						{
+							"key": "date",
+							"value": "2025-03-03"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
