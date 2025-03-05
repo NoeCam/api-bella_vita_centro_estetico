@@ -7,7 +7,7 @@ import routes from "./routes/index.js";
 const server = express();
 
 server.use(express.json());
-server.use(cors());
+server.use(cors({ origin: "https://bellavitacentroestetico.vercel.app" }));
 server.use(morgan("dev"));
 
 server.use(routes);

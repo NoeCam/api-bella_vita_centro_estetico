@@ -132,6 +132,51 @@
 			"response": []
 		},
 		{
+			"name": "time-appointments",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"year\": 2025,\r\n    \"month\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3010/time-appointments?treatmentId=1&adminId=1&date=2025-03-05 ",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3010",
+					"path": [
+						"time-appointments"
+					],
+					"query": [
+						{
+							"key": "treatmentId",
+							"value": "1"
+						},
+						{
+							"key": "adminId",
+							"value": "1"
+						},
+						{
+							"key": "date",
+							"value": "2025-03-05 "
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "appointments",
 			"request": {
 				"method": "GET",
