@@ -9,7 +9,7 @@ const selectAdminByEmailService = async (email) => {
 
   // Comprobamos si hay algún usuario con el email proporcionado.
   const [admin] = await pool.query(
-    `SELECT id, first_name, last_name, email, celphone, password FROM admin WHERE email = ?`,
+    `SELECT id, first_name, last_name, email, celphone, password FROM admins WHERE email = ?`,
     [email]
   );
 
